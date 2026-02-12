@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>For My Valentine ❤️ (kerasin volume, tapi jgn keras-keras, pake earphone kalo ada :)</title>
+<title>For My Valentine ❤️</title>
 <style>
   body {
     margin: 0;
@@ -35,27 +35,39 @@
     font-size: 16px;
     cursor: pointer;
     margin: 10px;
-    transition: 0.3s;
   }
 
   .yes { background: #ff4d6d; color: white; }
-  .yes:hover { background: #ff1e4d; }
-
-  .no {
-    background: #aaa;
-    color: white;
-    position: absolute;
-  }
+  .no { background: #aaa; color: white; position: absolute; }
 
   .page { display: none; }
   .page.active { display: block; }
 
-  #message { margin-top: 20px; font-size: 18px; }
+  /* LOVE METER */
+  .meter {
+    width: 100%;
+    height: 30px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+
+  .meter-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg,#ff4d6d,#ff8fa3);
+    transition: width 0.3s;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    margin-top: 25px;
+  }
 </style>
 </head>
 <body>
 
-<!-- Background Music -->
 <audio id="bgMusic" loop playsinline preload="auto">
   <source src="starry-eyes.mp3" type="audio/mpeg">
 </audio>
@@ -78,13 +90,26 @@
 
   <!-- PAGE 3 -->
   <div class="page" id="page3">
-    <h1>Babyla, Will You Be My Valentine? 🐯💖👶</h1>
-    <button class="yes" onclick="sayYes()">Yes ❤️</button>
+    <h1>Babyla, Will You Be My Valentine? 💖</h1>
+    <button class="yes" onclick="nextPage(4)">Yes ❤️</button>
     <button class="no" id="no3">No 😢</button>
+  </div>
 
-    <div id="message" style="display:none;">
-      YAYYY!! AILOPU SAYANG ❤️🥰<br><br>
-      <a href="https://drive.google.com/file/d/1rJV4-hetwO_JHevFGSUqZYIUfOeM-63y/view?usp=sharing" target="_blank" style="color:white;font-weight:bold;text-decoration:underline;">Klik beb, ini buat kamu 💌</a>
+  <!-- PAGE 4 LOVE METER -->
+  <div class="page" id="page4">
+    <h1>Seberapa besar kamu sayang aku? 🥺❤️</h1>
+
+    <div class="meter">
+      <div class="meter-fill" id="fill"></div>
+    </div>
+
+    <input type="range" min="0" max="100" value="0" id="slider">
+
+    <p id="loveText">Geser sampai penuh bil 😚</p>
+
+    <div id="reward" style="display:none;">
+      <h3>NAHH GITU DONG ❤️</h3>
+      <button class="yes" onclick="openGift()">Buka Hadiahmu 💌</button>
     </div>
   </div>
 
@@ -93,7 +118,6 @@
 <script>
   const music = document.getElementById('bgMusic');
 
-  // MUSIC: play on FIRST interaction (IMPOSSIBLE to true-autoplay on iPhone)
   function initMusicOnce() {
     music.play().catch(() => {});
     document.removeEventListener('click', initMusicOnce);
@@ -107,16 +131,33 @@
     document.getElementById('page' + num).classList.add('active');
   }
 
-  function sayYes() {
-    document.getElementById('message').style.display = 'block';
+  function openGift() {
+    window.open("https://drive.google.com/file/d/1alB_YKeAP17aqkq4bSu32H_47nqQiLnm/view?usp=drive_link", "_blank");
   }
 
-  // RUNAWAY NO BUTTONS
+  const slider = document.getElementById('slider');
+  const fill = document.getElementById('fill');
+  const text = document.getElementById('loveText');
+  const reward = document.getElementById('reward');
+
+  slider.oninput = () => {
+    const val = slider.value;
+    fill.style.width = val + "%";
+
+    if (val < 30) text.innerText = "Segini doang bil? 🥺";
+    else if (val < 60) text.innerText = "Masih kurang lah 😤";
+    else if (val < 90) text.innerText = "Dikit lagi dong sayang 😚";
+    else if (val >= 100) {
+      text.innerText = "KAMU KECINTAAN BGT YA SAMA AKU??? ❤️";
+      reward.style.display = "block";
+    }
+  };
+
   ['no1','no2','no3'].forEach(id => {
     const btn = document.getElementById(id);
     function move() {
       btn.style.left = Math.random() * (window.innerWidth - 120) + 'px';
-      btn.style.top  = Math.random() * (window.innerHeight - 60) + 'px';
+      btn.style.top = Math.random() * (window.innerHeight - 60) + 'px';
     }
     btn.addEventListener('mouseover', move);
     btn.addEventListener('touchstart', move);
